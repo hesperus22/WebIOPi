@@ -661,6 +661,10 @@ WebIOPi.prototype.newDevice = function(type, name) {
 	if (type == "Luminosity") {
 		return new Luminosity(name);
 	}
+    
+    if (type == "Humidity") {
+		return new Humidity(name);
+	}
 
 	if (type == "Distance") {
 		return new Distance(name);
@@ -1307,6 +1311,39 @@ Luminosity.prototype.refreshUI = function() {
 			element.header.text(lum + ": " + data + "lx");
 		}
 		setTimeout(function(){lum.refreshUI()}, lum.refreshTime);
+	});
+}
+
+function Humidity(name) {
+	this.name = name;
+	this.url = "/devices/" + name + "/sensor";
+	this.refreshTime = 5000;
+}
+
+Humidity.prototype.toString = function() {
+	return this.name + ": Humidity";
+}
+
+Humidity.prototype.getLux = function(callback) {
+	$.get(this.url + "/humidity", function(data) {
+		callback(this.name, data);
+	});
+}
+
+Humidity.prototype.refreshUI = function() {
+	var hum = this;
+	var element = this.element;
+	
+	if ((element != undefined) && (element.header == undefined)) {
+		element.header = $("<h3>" + this + "</h3>");
+		element.append(element.header);
+	}
+	
+	this.getLux(function(name, data){
+		if (element != undefined) {
+			element.header.text(hum + ": " + data + "%");
+		}
+		setTimeout(function(){hum.refreshUI()}, hum.refreshTime);
 	});
 }
 

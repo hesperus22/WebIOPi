@@ -128,6 +128,18 @@ class Luminosity():
     @response("%.02f")
     def getLux(self):
         return self.__getLux__()
+        
+class Humidity():
+    def __family__(self):
+        return "Humidity"
+    
+    def __getHumidity__(self):
+        raise NotImplementedError
+
+    @request("GET", "sensor/humidity")
+    @response("%.02f")
+    def getHumidity(self):
+        return self.__getHumidity__()
 
 class Distance():
     def __family__(self):
