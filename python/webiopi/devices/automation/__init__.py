@@ -14,32 +14,33 @@
 
 from webiopi import GPIO, deviceInstance
 from webiopi.protocols.rest import *
+from webiopi.utils import toInt
 
 class Roller():
     def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
         self.upPort = GPIO
         if upPort!=GPIO :
             self.upPort = deviceInstance(upPort)
-        self.upPin = upPin
-        self.upPort.setFunction(upPin, GPIO.IN, GPIO.PUD_UP)
+        self.upPin = toInt(upPin)
+        self.upPort.setFunction(self.upPin, GPIO.IN, GPIO.PUD_UP)
             
         self.downPort = GPIO
         if downPort!=GPIO :
             self.downPort = deviceInstance(downPort)
-        self.downPin = downPin
-        self.downPort.setFunction(downPin, GPIO.IN, GPIO.PUD_UP)
+        self.downPin = toInt(downPin)
+        self.downPort.setFunction(self.downPin, GPIO.IN, GPIO.PUD_UP)
             
         self.aPort = GPIO
         if aPort!=GPIO :
             self.aPort = deviceInstance(aPort)
-        self.aPin = aPin
-        self.aPort.setFunction(aPin, GPIO.OUT)
+        self.aPin = toInt(aPin)
+        self.aPort.setFunction(self.aPin, GPIO.OUT)
             
         self.bPort = GPIO
         if bPort!=GPIO :
             self.bPort = deviceInstance(bPort)
-        self.bPin = bPin
-        self.bPort.setFunction(bPin, GPIO.OUT)
+        self.bPin = toInt(bPin)
+        self.bPort.setFunction(self.bPin, GPIO.OUT)
         
     def __family__(self):
         return "Roller"
