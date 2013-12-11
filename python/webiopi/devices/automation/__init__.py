@@ -33,13 +33,13 @@ class Roller():
 		if aPort!=GPIO :
 			self.aPort = deviceInstance(aPort)
 		self.aPin = aPin
-		self.aPort.setFunction(aPin, GPIO.IN, GPIO.PUD_UP)
+		self.aPort.setFunction(aPin, GPIO.OUT)
 			
 		self.bPort = GPIO
 		if bPort!=GPIO :
 			self.bPort = deviceInstance(bPort)
 		self.bPin = bPin
-		self.bPort.setFunction(bPin, GPIO.IN, GPIO.PUD_UP)
+		self.bPort.setFunction(bPin, GPIO.OUT)
 		
 	@request("POST", "up")
 	def up(self):
