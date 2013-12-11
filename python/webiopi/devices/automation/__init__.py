@@ -41,6 +41,9 @@ class Roller():
 		self.bPin = bPin
 		self.bPort.setFunction(bPin, GPIO.OUT)
 		
+	def __family__(self):
+        return "Roller"
+		
 	@request("POST", "up")
 	def up(self):
 		if self.isUp():
