@@ -16,7 +16,7 @@ from webiopi import GPIO, deviceInstance
 from webiopi.protocols.rest import *
 
 class Roller():
-	def __init__(self, upPort=GPIO, upPin, downPort=GPIO, downPin, aPort=GPIO, aPin, bPort=GPIO, bPin):
+	def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
 		self.upPort = GPIO
 		if upPort!=GPIO :
 			self.upPort = deviceInstance(upPort)
@@ -49,7 +49,8 @@ class Roller():
 		self.aPort.digitalWrite(self.aPin, GPIO.HIGH)
 		self.bPort.digitalWrite(self.bPin, GPIO.LOW)
 		
-		while !self.isUp():
+		while not self.isUp():
+			pass
 		
 		self.aPort.digitalWrite(self.aPin, GPIO.LOW)
 		
@@ -62,7 +63,8 @@ class Roller():
 		self.aPort.digitalWrite(self.aPin, GPIO.LOW)
 		self.bPort.digitalWrite(self.bPin, GPIO.HIGH)
 		
-		while !self.isDown():
+		while not self.isDown():
+			pass
 		
 		self.bPort.digitalWrite(self.bPin, GPIO.LOW)
 	
