@@ -669,6 +669,10 @@ WebIOPi.prototype.newDevice = function(type, name) {
 	if (type == "Distance") {
 		return new Distance(name);
 	}
+	
+	if (type == "Roller") {
+		return new Roller(name);
+	}
 
 	return undefined;
 }
@@ -1311,6 +1315,46 @@ Luminosity.prototype.refreshUI = function() {
 			element.header.text(lum + ": " + data + "lx");
 		}
 		setTimeout(function(){lum.refreshUI()}, lum.refreshTime);
+	});
+}
+
+function Roller(name) {
+	this.name = name;
+	this.url = "/devices/" + name;
+	this.refreshTime = 1000;
+}
+
+Roller.prototype.toString = function() {
+	return this.name + ": Roller";
+}
+
+Roller.prototype.getState = function(callback) {
+	$.get(this.url + "/state", function(data) {
+		callback(this.name, data);
+	});
+}
+
+Roller.prototype.refreshUI = function() {
+	var roller = this;
+	var element = this.element;
+	
+	if ((element != undefined) && (element.header == undefined)) {
+		element.header = $("<h3>" + this + "</h3>");
+		element.append(element.header);
+	}
+	
+	if ((element != undefined) && (element.header == undefined)){
+		element.buttons = $("<span/>");
+		$('<button>Up</button>').click(function(){ $.post(this.url + "/up");});
+		$('<button>Down</button>').click(function(){ $.post(this.url + "/down");})
+		element.append(element.buttons);
+	}
+	
+	this.getState(function(name, data){
+		if (element != undefined) {
+			element.header.text(roller + ": " + data);
+		}
+		setTimeout(function(){roller.refreshUI()}, roller.refreshTime);
 	});
 }
 
