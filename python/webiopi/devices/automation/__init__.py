@@ -57,6 +57,7 @@ class RollerThread(Thread):
 class Roller():
     def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
         self.upPort = GPIO
+        self.rollerThread = None
         if upPort!=GPIO :
             self.upPort = deviceInstance(upPort)
         self.upPin = toint(upPin)
