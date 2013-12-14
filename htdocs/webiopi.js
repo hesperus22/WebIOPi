@@ -1350,6 +1350,7 @@ Roller.prototype.refreshUI = function() {
 		element.buttons.append(button);
 		button = webiopi().createButton('down', 'Down', function(){ $.post(url + "/down");});
 		element.buttons.append(button);
+        element.append(element.buttons);
 	}
 	
 	this.getState(function(name, data){
