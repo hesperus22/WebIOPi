@@ -1,4 +1,4 @@
-__pychache__
+*.pyc
 /python/build
 /python/dist
 /python/WebIOPi.egg-info
