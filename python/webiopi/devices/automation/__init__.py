@@ -22,31 +22,32 @@ class RollerThread(Thread):
         Thread.__init__(self)
         self.canceled = False
         self.direction = up
+        self.roller = roller
         
     def cancel(self):
         self.canceled = True
         
     def up(self):
-        if roller.isUp():
+        if self.roller.isUp():
             return
         
-        roller.startUp()
+        self.roller.startUp()
         
-        while not (roller.isUp() or self.canceled):
+        while not (self.roller.isUp() or self.canceled):
             pass
         
-        roller.stop();
+        self.roller.stop();
         
     def down(self):
-        if roller.isDown():
+        if self.roller.isDown():
             return
         
-        roller.startDown()
+        self.roller.startDown()
         
-        while not (roller.isDown() or self.canceled):
+        while not (self.roller.isDown() or self.canceled):
             pass
         
-        roller.stop()
+        self.roller.stop()
     
     def run(self):
         if self.direction:
