@@ -19,6 +19,7 @@ from threading import Thread
 
 class RollerThread(Thread):
     def __init__(self, roller, up):
+        Thread.__init__(self)
         self.canceled = False
         self.direction = up
         
