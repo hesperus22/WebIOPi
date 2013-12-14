@@ -28,13 +28,13 @@ class DHT11(Temperature, Humidity):
         return self.Celsius2Kelvin()
 
     def __getCelsius__(self):
-        return readDht11(self)[1]
+        return self.readDht11()[1]
     
     def __getFahrenheit__(self):
         return self.Celsius2Fahrenheit()
 
     def __getHumidity__(self):
-        return readDht11(self)[0]
+        return self.readDht11()[0]
         
     def readDht11(self):
         res = None
