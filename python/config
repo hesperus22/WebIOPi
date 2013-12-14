@@ -82,6 +82,7 @@ multicast = true
 
 bmp = BMP085
 dht11 = DHT11
+roller0 = Roller upPin:7 downPin:8 aPin:9 bPin:10
 
 #gpio0 = PCF8574
 #gpio1 = PCF8574 slave:0x21

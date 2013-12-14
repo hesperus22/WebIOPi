@@ -84,8 +84,14 @@ class Roller():
         self.bPort.setFunction(self.bPin, GPIO.OUT)
     
     def __str__(self):
+        def port(port):
+            if port == GPIO:
+                return "GPIO"
+            else:
+                return port
+                
         return "Roller (upPort: %s, upPin: %d, downPort: %s, downPin: %d, aPort: %s, aPin: %d, bPort: %s, bPin: %d)" \
-            %(self.upPort, self.upPin, self.downPort, self.downPin, self.aPort, self.aPin, self.bPort, self.bPin)
+            %(port(self.upPort), self.upPin, port(self.downPort), self.downPin, port(self.aPort), self.aPin, port(self.bPort), self.bPin)
     
     def __family__(self):
         return "Roller"
