@@ -136,19 +136,19 @@ function WebIOPi() {
 	// init ALTs
 	this.addALT(this.ALT.I2C, 0, "SDA");
 	this.addALT(this.ALT.I2C, 1, "SCL");
-	this.addALT(this.ALT.I2C, 2, "SDA");
-	this.addALT(this.ALT.I2C, 3, "SCL");
+	//this.addALT(this.ALT.I2C, 2, "SDA");
+	//this.addALT(this.ALT.I2C, 3, "SCL");
 
-	this.addALT(this.ALT.SPI,  7, "CE1");
-	this.addALT(this.ALT.SPI,  8, "CE0");
-	this.addALT(this.ALT.SPI,  9, "MISO");
-	this.addALT(this.ALT.SPI, 10, "MOSI");
-	this.addALT(this.ALT.SPI, 11, "SCLK");
+	//this.addALT(this.ALT.SPI,  7, "CE1");
+	//this.addALT(this.ALT.SPI,  8, "CE0");
+	//this.addALT(this.ALT.SPI,  9, "MISO");
+	//this.addALT(this.ALT.SPI, 10, "MOSI");
+	//this.addALT(this.ALT.SPI, 11, "SCLK");
 	
 	this.addALT(this.ALT.UART, 14, "TX");
 	this.addALT(this.ALT.UART, 15, "RX");
 	
-	this.addALT(this.ALT.ONEWIRE, 4, "");
+	this.addALT(this.ALT.ONEWIRE, 4, "1WIRE");
 }
 
 WebIOPi.prototype.init = function() {
@@ -1339,14 +1339,15 @@ Roller.prototype.refreshUI = function() {
 	var element = this.element;
 	
 	if ((element != undefined) && (element.header == undefined)) {
-		element.header = $("<h3>" + this + "</h3>");
+		element.header = $("<h3>" + this + "</h3>").css("display", "inline");
 		element.append(element.header);
 	}
 	
-	if ((element != undefined) && (element.header == undefined)){
+	if ((element != undefined) && (element.buttons == undefined)){
 		element.buttons = $("<span/>");
-		$('<button>Up</button>').click(function(){ $.post(this.url + "/up");});
-		$('<button>Down</button>').click(function(){ $.post(this.url + "/down");})
+		var url = this.url;
+		element.buttons.append($('<button>Up</button>').click(function(){ $.post(url + "/up");}));
+		element.buttons.append($('<button>Down</button>').click(function(){ $.post(url + "/down");}));
 		element.append(element.buttons);
 	}
 	
