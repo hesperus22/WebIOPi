@@ -5,6 +5,10 @@
 #23 = OUT 0
 #24 = OUT 0
 #25 = OUT 1
+10 = IN
+9 = IN
+8 = IN
+7 = IN
 
 #------------------------------------------------------------------------#
 
@@ -45,7 +49,7 @@ passwd-file = /etc/webiopi/passwd
 
 [COAP]
 # CoAP Server configuration
-enabled = true
+enabled = false
 port = 5683
 # Enable CoAP multicast
 multicast = true
@@ -76,7 +80,8 @@ multicast = true
 #temp2 = DS18B20
 #temp3 = DS18B20 slave:28-0000049bc218
 
-#bmp = BMP085
+bmp = BMP085
+dht11 = DHT11
 
 #gpio0 = PCF8574
 #gpio1 = PCF8574 slave:0x21
