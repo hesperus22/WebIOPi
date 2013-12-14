@@ -18,13 +18,42 @@ from webiopi.utils import toint
 from threading import Thread
 
 class RollerThread(Thread):
-	def __init__(self, roller, up):
-		self.canceled = false
-		self.up = up
-		
-	def run(self):
-		
-		
+    def __init__(self, roller, up):
+        self.canceled = False
+        self.direction = up
+        
+    def cancel(self):
+        self.canceled = True
+        
+    def up(self):
+        if roller.isUp():
+            return
+        
+        roller.startUp()
+        
+        while not (roller.isUp() or self.canceled):
+            pass
+        
+        roller.stop();
+        
+    def down(self):
+        if roller.isDown():
+            return
+        
+        roller.startDown()
+        
+        while not (roller.isDown() or self.canceled):
+            pass
+        
+        roller.stop()
+    
+    def run(self):
+        if self.direction:
+            self.up()
+        else:
+            self.down()
+        
+        
 class Roller():
     def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
         self.upPort = GPIO
@@ -51,44 +80,38 @@ class Roller():
         self.bPin = toint(bPin)
         self.bPort.setFunction(self.bPin, GPIO.OUT)
     
-	def __str__(self):
-		return "Roller (upPort: %s, upPin: %d, downPort: %s, downPin: %d, aPort: %s, aPin: %d, bPort: %s, bPin: %d)" \
-			%(self.upPort, self.upPin, self.downPort, self.downPin, self.aPort, self.aPin, self.bPort, self.bPin)
+    def __str__(self):
+        return "Roller (upPort: %s, upPin: %d, downPort: %s, downPin: %d, aPort: %s, aPin: %d, bPort: %s, bPin: %d)" \
+            %(self.upPort, self.upPin, self.downPort, self.downPin, self.aPort, self.aPin, self.bPort, self.bPin)
     
     def __family__(self):
         return "Roller"
         
     @request("POST", "up")
     def up(self):
-		def __up__():
-			if self.isUp():
-				return
-			
-			self.aPort.digitalWrite(self.aPin, GPIO.HIGH)
-			self.bPort.digitalWrite(self.bPin, GPIO.LOW)
-			
-			while not self.isUp():
-				pass
-			
-			self.aPort.digitalWrite(self.aPin, GPIO.LOW)
-        
-		Thread(__up__).start()
+        if self.rollerThread is not None:
+            self.rollerThread.cancel()
+        self.rollerThread = RollerThread(self, True)
+        self.rollerThread.start()
     
     @request("POST", "down")
     def down(self):
-		def __down__():
-			if self.isDown():
-				return
+        if self.rollerThread is not None:
+            self.rollerThread.cancel()
+        self.rollerThread = RollerThread(self, False)
+        self.rollerThread.start()
         
-			self.aPort.digitalWrite(self.aPin, GPIO.LOW)
-			self.bPort.digitalWrite(self.bPin, GPIO.HIGH)
+    def startDown(self):
+        self.aPort.digitalWrite(self.aPin, GPIO.LOW)
+        self.bPort.digitalWrite(self.bPin, GPIO.HIGH)
         
-			while not self.isDown():
-				pass
+    def startUp(self):
+        self.aPort.digitalWrite(self.aPin, GPIO.HIGH)
+        self.bPort.digitalWrite(self.bPin, GPIO.LOW)
         
-			self.bPort.digitalWrite(self.bPin, GPIO.LOW)
-		
-		Thread(__down__).start()
+    def stop(self):
+        self.aPort.digitalWrite(self.aPin, GPIO.LOW)
+        self.bPort.digitalWrite(self.bPin, GPIO.LOW)
     
     @request("GET", "state")
     @response("%s")
@@ -104,8 +127,8 @@ class Roller():
         
         if self.bPort.digitalRead(self.bPin) == GPIO.HIGH:
             return "Going down"
-			
-		return "Unknown"
+            
+        return "Unknown"
             
     def isUp(self):
         return self.upPort.digitalRead(self.upPin) == GPIO.LOW
