@@ -15,7 +15,16 @@
 from webiopi import GPIO, deviceInstance
 from webiopi.protocols.rest import *
 from webiopi.utils import toint
+from threading import Thread
 
+class RollerThread(Thread):
+	def __init__(self, roller, up):
+		self.canceled = false
+		self.up = up
+		
+	def run(self):
+		
+		
 class Roller():
     def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
         self.upPort = GPIO
@@ -41,36 +50,45 @@ class Roller():
             self.bPort = deviceInstance(bPort)
         self.bPin = toint(bPin)
         self.bPort.setFunction(self.bPin, GPIO.OUT)
-        
+    
+	def __str__(self):
+		return "Roller (upPort: %s, upPin: %d, downPort: %s, downPin: %d, aPort: %s, aPin: %d, bPort: %s, bPin: %d)" \
+			%(self.upPort, self.upPin, self.downPort, self.downPin, self.aPort, self.aPin, self.bPort, self.bPin)
+    
     def __family__(self):
         return "Roller"
         
     @request("POST", "up")
     def up(self):
-        if self.isUp():
-            return
+		def __up__():
+			if self.isUp():
+				return
+			
+			self.aPort.digitalWrite(self.aPin, GPIO.HIGH)
+			self.bPort.digitalWrite(self.bPin, GPIO.LOW)
+			
+			while not self.isUp():
+				pass
+			
+			self.aPort.digitalWrite(self.aPin, GPIO.LOW)
         
-        self.aPort.digitalWrite(self.aPin, GPIO.HIGH)
-        self.bPort.digitalWrite(self.bPin, GPIO.LOW)
-        
-        while not self.isUp():
-            pass
-        
-        self.aPort.digitalWrite(self.aPin, GPIO.LOW)
-        
+		Thread(__up__).start()
     
     @request("POST", "down")
     def down(self):
-        if self.isDown():
-            return
+		def __down__():
+			if self.isDown():
+				return
         
-        self.aPort.digitalWrite(self.aPin, GPIO.LOW)
-        self.bPort.digitalWrite(self.bPin, GPIO.HIGH)
+			self.aPort.digitalWrite(self.aPin, GPIO.LOW)
+			self.bPort.digitalWrite(self.bPin, GPIO.HIGH)
         
-        while not self.isDown():
-            pass
+			while not self.isDown():
+				pass
         
-        self.bPort.digitalWrite(self.bPin, GPIO.LOW)
+			self.bPort.digitalWrite(self.bPin, GPIO.LOW)
+		
+		Thread(__down__).start()
     
     @request("GET", "state")
     @response("%s")
@@ -86,6 +104,8 @@ class Roller():
         
         if self.bPort.digitalRead(self.bPin) == GPIO.HIGH:
             return "Going down"
+			
+		return "Unknown"
             
     def isUp(self):
         return self.upPort.digitalRead(self.upPin) == GPIO.LOW
