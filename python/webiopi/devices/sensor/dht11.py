@@ -19,7 +19,7 @@ class DHT11(Temperature, Humidity):
     def __init__(self, port=17, type=11):
         self.port = port
         self.type = type
-        dhtreader.init
+        dhtreader.init()
         
     def __family__(self):
         return [Temperature.__family__(self), Humidity.__family__(self)]
