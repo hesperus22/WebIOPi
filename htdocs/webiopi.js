@@ -1346,9 +1346,9 @@ Roller.prototype.refreshUI = function() {
 	if ((element != undefined) && (element.buttons == undefined)){
 		element.buttons = $("<span/>");
 		var url = this.url;
-        var button = webiopi().createButton('up', '&#9650;', function(){ $.post(url + "/up");});
+        var button = webiopi().createButton('up', '▲', function(){ $.post(url + "/up");});
 		element.buttons.append(button);
-		button = webiopi().createButton('down', '&#9660;', function(){ $.post(url + "/down");});
+		button = webiopi().createButton('down', '▼', function(){ $.post(url + "/down");});
 		element.buttons.append(button);
         element.append(element.buttons);
 	}
