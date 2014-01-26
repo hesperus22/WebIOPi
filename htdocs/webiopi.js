@@ -673,6 +673,10 @@ WebIOPi.prototype.newDevice = function(type, name) {
 	if (type == "Roller") {
 		return new Roller(name);
 	}
+    
+    if (type == "Alarm") {
+		return new Alarm(name);
+	}
 
 	return undefined;
 }
@@ -1358,6 +1362,49 @@ Roller.prototype.refreshUI = function() {
 			element.header.text(roller + ": " + data);
 		}
 		setTimeout(function(){roller.refreshUI()}, roller.refreshTime);
+	});
+}
+
+function Alarm(name) {
+	this.name = name;
+	this.url = "/devices/" + name;
+	this.refreshTime = 1000;
+}
+
+Alarm.prototype.toString = function() {
+	return this.name + ": Alarm";
+}
+
+Alarm.prototype.getState = function(callback) {
+	$.get(this.url + "/state", function(data) {
+		callback(this.name, data);
+	});
+}
+
+Alarm.prototype.refreshUI = function() {
+	var Alarm = this;
+	var element = this.element;
+	
+	if ((element != undefined) && (element.header == undefined)) {
+		element.header = $("<h3>" + this + "</h3>").css("display", "inline");
+		element.append(element.header);
+	}
+	
+	if ((element != undefined) && (element.buttons == undefined)){
+		element.buttons = $("<span/>");
+		var url = this.url;
+        var button = webiopi().createButton('lock', 'lock', function(){ $.post(url + "/lock");});
+		element.buttons.append(button);
+		button = webiopi().createButton('unlock', 'unlock', function(){ $.post(url + "/unlock");});
+		element.buttons.append(button);
+        element.append(element.buttons);
+	}
+	
+	this.getState(function(name, data){
+		if (element != undefined) {
+			element.header.text(Alarm + ": " + data);
+		}
+		setTimeout(function(){Alarm.refreshUI()}, Alarm.refreshTime);
 	});
 }
 
