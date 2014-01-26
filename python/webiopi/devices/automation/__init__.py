@@ -145,7 +145,7 @@ class Roller():
     def isDown(self):
         return self.downPort.digitalRead(self.downPin) == GPIO.LOW
         
- class AlarmThread(Thread):
+class AlarmThread(Thread):
     def __init__(self, alarm):
         Thread.__init__(self)
         self.canceled = False
@@ -161,7 +161,7 @@ class Roller():
         self.canceled = True
     
         
- class Alarm():
+class Alarm():
     def __init__(self, alarmPin, pirPin, alarmPort=GPIO, pirPort=GPIO):
         self.alarmPin = alarmPin
         self.alarmPort = alarmPort
