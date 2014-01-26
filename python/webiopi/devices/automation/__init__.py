@@ -153,7 +153,7 @@ class AlarmThread(Thread):
     
     def run(self):
         while not self.canceled:
-            if self.alarm.pirState() == GPIO.HIGH
+            if self.alarm.pirState() == GPIO.HIGH:
                 self.alarm.startAlarm()
             time.sleep(1)
                 
