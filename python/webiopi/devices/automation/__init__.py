@@ -16,6 +16,7 @@ from webiopi import GPIO, deviceInstance
 from webiopi.protocols.rest import *
 from webiopi.utils import toint
 from threading import Thread
+import time
 
 class RollerThread(Thread):
     def __init__(self, roller, up):
@@ -54,8 +55,7 @@ class RollerThread(Thread):
             self.up()
         else:
             self.down()
-        
-        
+                
 class Roller():
     def __init__(self, upPin, downPin, aPin, bPin, upPort=GPIO, downPort=GPIO, aPort=GPIO, bPort=GPIO):
         self.upPort = GPIO
@@ -144,3 +144,63 @@ class Roller():
         
     def isDown(self):
         return self.downPort.digitalRead(self.downPin) == GPIO.LOW
+        
+ class AlarmThread(Thread):
+    def __init__(self, alarm):
+        Thread.__init__(self)
+        self.canceled = False
+        self.alarm = alarm
+    
+    def run(self):
+        while not self.canceled:
+            if self.alarm.pirState() == GPIO.HIGH
+                self.alarm.startAlarm()
+            time.sleep(1)
+                
+    def cancel(self):
+        self.canceled = True
+    
+        
+ class Alarm():
+    def __init__(self, alarmPin, pirPin, alarmPort=GPIO, pirPort=GPIO):
+        self.alarmPin = alarmPin
+        self.alarmPort = alarmPort
+        self.pirPin = pirPin
+        self.pirPort = pirPort
+        
+    @request("POST", "startAlarm")
+    def startAlarm(self):
+        self.alarmPort.digitalWrite(alarmPin, GPIO.HIGH)
+        
+    @request("POST", "stopAlarm")    
+    def stopAlarm(self):
+        self.alarmPort.digitalWrite(alarmPin, GPIO.LOW)
+        
+    @request("GET", "pir")
+    def pirState(self):
+        return self.pirPort.digitalRead(pirPin)
+    
+    @request("POST", "lock")
+    def lock(self):
+        if self.locked:
+            return
+        self.locked = True
+        self.worker = AlarmThread(self)
+    
+    @request("POST", "unlock")
+    def unlock(self):
+        if self.worker is not None:
+            self.worker.cancel()
+        self.stopAlarm()
+        self.locked = False
+        
+    @request("GET", "state")
+    @response("%s")    
+    def state(self):
+        if self.locked:
+            return "Locked"
+        else:
+            return "Unlocked"
+        
+        
+    
