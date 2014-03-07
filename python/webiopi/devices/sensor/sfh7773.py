@@ -24,11 +24,8 @@ from webiopi.devices.sensor import Luminosity
 class SFH7773(I2C, Luminosity):
     def __init__(self, slave=0x38, name="SFH7773"):
         I2C.__init__(self, toint(slave), name)
-        start = [0x03, 0x03]
-        self.writeRegisters(0x80, start)
+        self.writeRegister(0x80, 0x03)
             
     def __getLux__(self):
         ambient = self.readRegisters(0x8c, 2)
-        proximity = self.readRegister(0x8f)
-        print(proximity)
         return ambient[1]<<8|ambient[0]
